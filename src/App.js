@@ -1,40 +1,23 @@
 // import logo from './logo.svg';
 import './App.css';
 import React from "react";
+import axios from "axios";
 // import PropTypes from "prop-types";
 
 class App extends React.Component{
-  constructor(){
-    super();
-    console.log("Constructor strating")
-  }
   state = {
-    count: 0
+    isLoading: true,
+    movies: [] // 미래에 만들 변수를 반드시 선언할 필요없지만 좋은 습관임
   };
-  add = () => {
-    // this.setState({count: this.state.count+1});
-    this.setState(current =>({count: current.count+1}));
-  };
-  minus = () => {
-    this.setState({count: this.state.count-1});
-    console.log("minus");
-  };
+  getMovies = async() =>{
+    const movies = await axios.get("https://yts-proxy.nomadcoders1.now.sh/list_movies.json ");
+  }
   componentDidMount(){
-    console.log("component rendered")
+    this.getMovies();
   }
-  componentDidUpdate(){
-    console.log("I did updated")
-  }
-/*   componentWillUnmount(){
-    console.log("bye")
-  } */
   render(){
-    console.log("I'm rendering")
-    return <div>
-      <h1>The number is:  {this.state.count}</h1>
-      <button onClick={this.add}>Add</button>
-      <button onClick={this.minus}>Minus</button>
-      </div>;
+    const {isLoading} = this.state;  //es6
+    return <div>{isLoading ? "Loading" : "We are ready"}</div>;
   }
 }
 
