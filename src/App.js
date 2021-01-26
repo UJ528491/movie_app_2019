@@ -1,23 +1,52 @@
 // import logo from './logo.svg';
-import './App.css';
+import "./App.css";
 import React from "react";
 import axios from "axios";
+import Movie from "./Movie";
 // import PropTypes from "prop-types";
 
-class App extends React.Component{
+class App extends React.Component {
   state = {
     isLoading: true,
-    movies: [] // 미래에 만들 변수를 반드시 선언할 필요없지만 좋은 습관임
+    movies: [], // 미래에 만들 변수를 반드시 선언할 필요없지만 좋은 습관임
   };
-  getMovies = async() =>{
-    const movies = await axios.get("https://yts-proxy.nomadcoders1.now.sh/list_movies.json ");
-  }
-  componentDidMount(){
+  getMovies = async () => {
+    const {
+      data: {
+        data: { movies },
+      },
+    } = await axios.get(
+      "https://yts-proxy.nomadcoders1.now.sh/list_movies.json?sort_by=rating"
+    );
+    this.setState({ movies, isLoading: false });
+  };
+  componentDidMount() {
     this.getMovies();
   }
-  render(){
-    const {isLoading} = this.state;  //es6
-    return <div>{isLoading ? "Loading" : "We are ready"}</div>;
+  render() {
+    const { isLoading, movies } = this.state; //es6
+    return (
+      <section className="container">
+        {isLoading ? (
+          <div className="loader">
+            <span className="loader__text">Loading...</span>
+          </div>
+        ) : (
+          <div className="movies">
+            {movies.map(movie => (
+              <Movie
+                id={movie.id}
+                year={movie.year}
+                title={movie.title}
+                summary={movie.summary}
+                poster={movie.medium_cover_image}
+                genres={movie.genres}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+    );
   }
 }
 
