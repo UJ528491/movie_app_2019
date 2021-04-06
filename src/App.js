@@ -1,9 +1,6 @@
-// import logo from './logo.svg';
-import "./App.css";
 import React from "react";
 import axios from "axios";
 import Movie from "./Movie";
-// import PropTypes from "prop-types";
 
 class App extends React.Component {
   state = {
@@ -20,6 +17,10 @@ class App extends React.Component {
     );
     this.setState({ movies, isLoading: false });
   };
+  getStatus = async url => {
+    const urlStatus = await axios.get(url).then(error => error.status);
+    return urlStatus;
+  };
   componentDidMount() {
     this.getMovies();
   }
@@ -35,10 +36,15 @@ class App extends React.Component {
           <div className="movies">
             {movies.map(movie => (
               <Movie
+                key={movie.id}
                 id={movie.id}
                 year={movie.year}
                 title={movie.title}
-                summary={movie.summary}
+                summary={
+                  movie.summary.length > 120
+                    ? `${movie.summary.slice(0, 120)}...`
+                    : movie.summary
+                }
                 poster={movie.medium_cover_image}
                 genres={movie.genres}
               />
